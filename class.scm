@@ -1,4 +1,4 @@
-;;; -*- Mode: Scheme; scheme48-package: edwin:object -*-
+;;; -*- Mode: Scheme; scheme48-package: soosy -*-
 ;;;
 ;;; A class-based single-dispatch OO system with generic functions
 ;;;
@@ -13,7 +13,7 @@
 
 (define (make-class name superclass variables)
   (let ((entry       (assq name *class-descriptors*))
-	(object-size (+ (length variables)
+        (object-size (+ (length variables)
                         (if superclass (class-object-size superclass) 1))))
     (let ((make-class
 	   (lambda ()
@@ -21,7 +21,7 @@
                           superclass
                           object-size
                           ;; store instvars in a vector
-                          (list->vector variables)
+                          variables
                           (cons '() (and superclass
                                          (class-methods superclass)))))))
       (if (not entry)
