@@ -7,9 +7,18 @@
   (%make-class name superclass (object-size) (variables) methods)
   ())
 
+(define-record-discloser :class
+  (lambda (c)
+    `(Class ,(class-name c) ,(class-variables c))))
+
 (define-record-type* object
   (%make-object class variables)
   ())
+
+(define-record-discloser :object
+  (lambda (obj)
+    `(Object ,(object-class obj) ,(object-variables obj))))
+
 
 (define (make-class name superclass variables)
   (let ((entry       (assq name *class-descriptors*))
