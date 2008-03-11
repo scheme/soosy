@@ -1,4 +1,4 @@
-;;; -*- Mode: Scheme; scheme48-package: edwin:object -*-
+;;; -*- Mode: Scheme; scheme48-package: soosy-macros -*-
 
 (define-syntax define-generic
   (syntax-rules ()
@@ -40,21 +40,18 @@
   (lambda (form rename compare)
     (if (not (and (= (length form) 4)
                   ;; check class name
-                  (symbol?      (second form))
+                  (symbol?     (second form))
                   ;; check superclass
-                  (or (class? (third form))
-                      (not    (third form)))
+                  (or (symbol? (third form))
+                      (false?  (third form)))
                   ;; check variables
                   (proper-list? (fourth form))))
         (syntax-error "define-class class-name superclass (var1 var2 ...)")
-        (let ((name           (second form))
-              (superclass     (if (null? (third form)) #f (third form)))
-              (variables      (fourth form))
-              (%define        (rename 'define))
-              (%define-syntax (rename 'define-syntax))
-              (%lambda        (rename 'lambda))
-              (%let           (rename 'let))
-              (%make-class    (rename 'make-class)))
+        (let* ((name           (second form))
+               (superclass     (third form))
+               (variables      (fourth form))
+               (%define        (rename 'define))
+               (%make-class    (rename 'make-class)))
           ;; compile-time definition
           (make-class name superclass variables)
           ;; run-time definition
