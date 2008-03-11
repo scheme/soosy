@@ -2,12 +2,12 @@
 
 (define-structure soosy-helpers soosy-helpers/interface
   (open scheme define-record-type* signals srfi-1)
-  (files class class-helpers))
+  (files class helpers))
 
 (define-structure soosy-macros soosy-macros/interface
-  (open scheme define-record-type* signals srfi-1)
+  (open scheme define-record-type* signals soosy-helpers srfi-1)
   (for-syntax (open scheme signals soosy-helpers srfi-1))
-  (files class class-helpers class-macros))
+  (files macros))
 
 (define-structure soosy soosy/interface
   (open scheme soosy-macros soosy-helpers))

@@ -19,6 +19,7 @@
    (export *class-descriptors*
            *generic-functions*
            *generic-function-counter*
+           false?
            methods-ref name->class)))
 
 (define-interface soosy/interface
