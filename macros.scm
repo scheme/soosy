@@ -53,7 +53,7 @@
                (%define        (rename 'define))
                (%make-class    (rename 'make-class)))
           ;; compile-time definition
-          (make-class name superclass variables)
+          (make-class name (name->class superclass) variables)
           ;; run-time definition
           `(,%define ,name (,%make-class ',name ,superclass ',variables))))))
 
