@@ -21,29 +21,33 @@
 
 
 (define (make-class name superclass variables)
-  (let ((entry       (assq name *class-descriptors*))
-        (object-size (+ (length variables)
-                        (if superclass (class-object-size superclass) 1))))
+  (let ((entry         (assq name *class-descriptors*))
+        (object-size   (+ (length variables)
+                        (if superclass (class-object-size superclass) 0)))
+        (all-variables (if superclass
+                           (append (class-variables superclass) variables)
+                           variables)))
     (let ((make-class
 	   (lambda ()
              (%make-class name
                           superclass
                           object-size
-                          ;; store instvars in a vector
-                          variables
-                          (cons '() (and superclass
-                                         (class-methods superclass)))))))
+                          all-variables
+                          (if superclass
+                              (class-methods superclass)
+                              '())))))
       (if (not entry)
 	  (let ((class (make-class)))
 	    (set! *class-descriptors* (cons (cons name class) *class-descriptors*))
 	    class)
 	  (let ((class (cdr entry)))
+            (display entry) (newline)
 	    (cond ((not (eq? (class-superclass class) superclass))
 		   (let ((class (make-class)))
 		     (set-cdr! entry class)
 		     class))
 		  ((and (= object-size (class-object-size class))
-			(equal? variables (class-variables class)))
+			(equal? all-variables (class-all-variables class)))
 		   class)
 		  (else
 		   (warn "Redefining class:" name)
@@ -57,6 +61,14 @@
 (define (class-methods/ref methods name)
   (or (method-lookup methods name)
       (error "unknown method" name)))
+
+(define (class-all-variables class)
+  (let loop ((superclass (class-superclass class))
+             (all-variables (class-variables class)))
+    (if (not superclass)
+        all-variables
+        (loop (class-superclass superclass)
+              (append (class-variables superclass) all-variables)))))
 
 (define (method-lookup methods name)
   (let loop ((methods methods))

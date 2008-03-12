@@ -11,7 +11,7 @@
           object-class object-variables
           class? object? object-of-class?
           class-name class-superclass class-methods
-          class-object-size class-variables))
+          class-object-size class-all-variables class-variables))
 
 (define-interface soosy-helpers/interface
   (compound-interface
