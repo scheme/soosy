@@ -38,7 +38,6 @@
 	    (set! *class-descriptors* (cons (cons name class) *class-descriptors*))
 	    class)
 	  (let ((class (cdr entry)))
-            (display entry) (newline)
 	    (cond ((not (eq? (class-superclass class) superclass))
 		   (let ((class (make-class)))
 		     (set-cdr! entry class)
