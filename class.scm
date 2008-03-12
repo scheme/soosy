@@ -72,6 +72,9 @@
 	  (set-car! methods (cons (cons name method) (car methods))))))
   name)
 
+(define (base-class? class)
+  (eq? class #f))
+
 (define (subclass? class class*)
   (or (eq? class class*)
       (let loop ((class (class-superclass class)))
@@ -87,7 +90,9 @@
 
 (define (object-of-class? class object)
   (and (object? object)
-       (eq? class (object-class object))))
+       (or (base-class? class)
+           (eq? class (object-class object))
+           (object-of-class? (class-superclass class) object))))
 
 (define (object-methods object)
   (class-methods (object-class object)))

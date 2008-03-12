@@ -9,7 +9,7 @@
 (define-interface soosy-objects/interface
   (export make-class make-object
           object-class object-variables
-          class? object? object-of-class?
+          class? object? object-of-class? base-class?
           class-name class-superclass class-methods
           class-variables))
 
