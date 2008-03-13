@@ -95,4 +95,6 @@
            (object-of-class? (class-superclass class) object))))
 
 (define (object-methods object)
-  (class-methods (object-class object)))
+  (if (object? object)
+      (class-methods (object-class object))
+      '()))
