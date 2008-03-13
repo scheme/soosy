@@ -19,6 +19,15 @@
   (lambda (obj)
     `(Object ,(object-class obj) ,(object-variables obj))))
 
+(define-record-type method :method
+  (make-method body inherited?)
+  method?
+  (body       method-body)
+  (inherited? method-inherited? set-method-inherited!))
+
+(define-record-discloser :method
+  (lambda (obj)
+    `(Method inherited:,(method-inherited? obj) (method-body obj))))
 
 (define (make-class name superclass variables)
   (let ((entry         (assq name *class-descriptors*))

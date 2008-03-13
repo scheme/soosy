@@ -7,9 +7,10 @@
 ))
 
 (define-interface soosy-objects/interface
-  (export make-class make-object
-          object-class object-variables
-          class? object? object-of-class? base-class?
+  (export make-class make-object make-method
+          method-body method-inherited? set-method-inherited!
+          object-class object-variables object-methods
+          class? object? object-of-class? base-class? method?
           class-name class-superclass class-methods
           class-variables))
 
