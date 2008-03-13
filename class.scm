@@ -20,7 +20,12 @@
 
 (define-record-discloser :object
   (lambda (obj)
-    `(Object ,(class-name (object-class obj)) ,(object-variables obj))))
+    `(Object ,(class-name (object-class obj)) ,(disclose-variables obj))))
+
+(define (disclose-variables object)
+    (map (lambda (name value) `(,name -> ,value))
+         (class-variables (object-class object))
+         (vector->list (object-variables object))))
 
 (define-record-type method :method
   (make-method body inherited?)
