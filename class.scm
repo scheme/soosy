@@ -4,12 +4,15 @@
 ;;;
 
 (define-record-type* class
-  (%make-class %name superclass (variables) methods)
+  (%make-class %name superclass (subclasses) (variables) methods)
   ())
 
 (define-record-discloser :class
   (lambda (c)
-    `(Class ,(class-name c) ,(class-variables c))))
+    `(Class ,(class-name c)
+            superclass: ,(class-name (class-superclass c))
+            subclasses: ,(map class-name (class-subclasses c))
+            variables:  ,(class-variables c))))
 
 (define-record-type* object
   (%make-object class variables)
@@ -33,11 +36,13 @@
   (let ((entry         (assq name *class-descriptors*))
         (all-variables (if superclass
                            (append (class-variables superclass) variables)
-                           variables)))
+                           variables))
+        (subclasses    '()))
     (let ((make-class
 	   (lambda ()
              (%make-class name
                           superclass
+                          subclasses
                           all-variables
                           (if superclass
                               (class-methods superclass)
@@ -45,11 +50,14 @@
       (if (not entry)
 	  (let ((class (make-class)))
 	    (set! *class-descriptors* (cons (cons name class) *class-descriptors*))
+            (class-add-subclass! superclass class)
 	    class)
 	  (let ((class (cdr entry)))
 	    (cond ((not (eq? (class-superclass class) superclass))
+                   (class-remove-subclass! (class-superclass class) class)
 		   (let ((class (make-class)))
 		     (set-cdr! entry class)
+                     (class-add-subclass! superclass class)
 		     class))
 		  ((equal? all-variables (class-variables class))
 		   class)
@@ -57,6 +65,18 @@
 		   (warn "Redefining class:" name)
 		   (set-class-variables! class variables)
 		   class)))))))
+
+(define (class-add-subclass! class subclass)
+  (cond
+   ((base-class? class))
+   ((class? class)
+    (set-class-subclasses! class (cons subclass (class-subclasses class))))))
+
+(define (class-remove-subclass! class subclass)
+  (cond
+   ((base-class? class))
+   ((class? class)
+    (set-class-subclasses! class (delete subclass (class-subclasses class))))))
 
 (define (class-method class name)
   (class-methods/ref (class-methods class) name))
