@@ -58,46 +58,33 @@
           ;; run-time definition
           `(,%define ,name (,%make-class ',name ,superclass ',variables))))))
 
-(define-syntax make-getters
-  (lambda (form rename compare)
-    (if (not (= 2 (length form)))
-        (syntax-error "make-getters variables")
-        (let* ((variables     (second form))
-               (var-count     (length variables))
-               (%syntax-rules (rename 'syntax-rules))
-               (%vector-ref   (rename 'vector-ref)))
-          (let loop ((index   0)
-                     (vars    variables)
-                     (getters '(,%syntax-rules '())))
-            (if (> index var-count)
-                getters
-                (loop (+ 1 index)
-                      (cdr vars)
-                      (append getters
-                              `((,(car vars))
-                                (,%vector-ref ,variables ,index))))))))))
+#|
 
-(define-syntax make-setters
+(define-syntax with-instance-variables
+  (syntax-rules ()
+    ((with-instance-variables <instance> (instvar ...) body ...)
+     (let-syntax ((set! (make-setters <instance> (instvar ...))))
+       (let (make-getters <instance> (instvar ...))
+         body ...)))))
+
+|#
+
+(define-syntax with-instance-variables
   (lambda (form rename compare)
-    (if (not (= 2 (length form)))
-        (syntax-error "make-setters variables")
-        (let* ((variables     (second form))
-               (var-count     (length variables))
-               (%set!         (rename 'set!))
-               (%syntax-rules (rename 'syntax-rules))
-               (%vector-set!  (rename 'vector-set!)))
-          (let loop ((index 0)
-                     (vars variables)
-                     (setters '(,%syntax-rules ,variables)))
-            (if (> index var-count)
-                (append setters
-                        '((set! variable value)
-                          (%set! variable value)))
-                (loop (+ 1 index)
-                      (cdr vars)
-                      (append setters
-                              `((set! ,(first vars) value)
-                                (vector-set! ,variables ,index value))))))))))
+    (if (< (length form) 4)
+        (syntax-error "with-instance-variables <instance> (instvar ...) body ...")
+        (let* ((instance      (second form))
+               (variables     (third form))
+               (body          (drop form 3))
+               (%let          (rename 'let))
+               (%let-syntax   (rename 'let-syntax))
+               (%make-setters (rename 'make-setters))
+               (%rename       (rename 'rename)))
+          `(,%let-syntax
+            ((set! (,%make-setters ',instance ',variables ,%rename)))
+            (,%let (make-getters ,instance ',variables)
+                   ,@body))))))
+
 #|
 (define-syntax define-method
   (lambda (form rename compare)

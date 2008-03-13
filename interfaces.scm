@@ -3,6 +3,7 @@
 (define-interface soosy-macros/interface
   (export (define-class   :syntax)
           (define-generic :syntax)
+          (with-instance-variables :syntax)
           ;; (define-method  :syntax)
 ))
 
@@ -17,7 +18,9 @@
 (define-interface soosy-helpers/interface
   (compound-interface
    soosy-objects/interface
-   (export *class-descriptors*
+   (export (make-getters :syntax)
+           make-setters
+           *class-descriptors*
            *generic-functions*
            *generic-function-counter*
            false? name->class
