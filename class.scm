@@ -20,7 +20,7 @@
 
 (define-record-discloser :object
   (lambda (obj)
-    `(Object ,(object-class obj) ,(object-variables obj))))
+    `(Object ,(class-name (object-class obj)) ,(object-variables obj))))
 
 (define-record-type method :method
   (make-method body inherited?)
