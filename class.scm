@@ -4,7 +4,7 @@
 ;;;
 
 (define-record-type* class
-  (%make-class name superclass (variables) methods)
+  (%make-class %name superclass (variables) methods)
   ())
 
 (define-record-discloser :class
@@ -60,6 +60,11 @@
 
 (define (class-method class name)
   (class-methods/ref (class-methods class) name))
+
+(define (class-name class)
+  (if (class? class)
+      (class-%name class)
+      class))
 
 (define (class-methods/ref methods name)
   (or (method-lookup methods name)
