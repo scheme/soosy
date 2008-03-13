@@ -20,8 +20,8 @@
    (export *class-descriptors*
            *generic-functions*
            *generic-function-counter*
-           false?
-           methods-ref name->class)))
+           false? name->class
+           generic-functions-ref)))
 
 (define-interface soosy/interface
   (compound-interface soosy-macros/interface

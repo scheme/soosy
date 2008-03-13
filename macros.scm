@@ -16,21 +16,22 @@
         (begin
           (set! *generic-function-counter* (+ 1 *generic-function-counter*))
           (let* ((params           (second form))
-                 (body             (third  form))
+                 (default-body     (third  form))
+                 (self             (first params))
                  (%CAR             (rename 'car))
                  (%COUNTER         (rename '*generic-function-counter*))
                  (%IF              (rename 'if))
                  (%LAMBDA          (rename 'lambda))
                  (%LET*            (rename 'let*))
-                 (%METHODS-REF     (rename 'methods-ref))
+                 (%LOOKUP          (rename 'generic-functions-ref))
                  (%OBJECT-METHODS  (rename 'object-methods))
                  (generic-function
                   `(,%LAMBDA ,params
-                             (,%LET* ((methods (,%OBJECT-METHODS (,%car ,params)))
-                                      (handler (,%METHODS-REF methods ,%COUNTER)))
+                             (,%LET* ((methods (,%OBJECT-METHODS ,self))
+                                      (handler (,%LOOKUP methods ,%COUNTER)))
                                      (,%if handler
                                            (handler ,@params)
-                                           body)))))
+                                           default-body)))))
             (set! *generic-functions*
                   (alist-cons generic-function *generic-function-counter*
                               *generic-functions*))

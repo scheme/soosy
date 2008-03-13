@@ -12,7 +12,7 @@
       name
       (lookup name *class-descriptors* "unknown class")))
 
-(define (methods-ref id)
+(define (generic-functions-ref id)
   (lookup id *generic-functions*
           "unknown generic function"))
 
@@ -21,6 +21,5 @@
     (if (not entry)
         (warn message key)
         (cdr entry))))
-
 
 (define (false? x) (not x))
