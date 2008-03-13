@@ -14,6 +14,7 @@
 
 (define-structure define-record-type*
     (export (define-record-type* :syntax)
+            define-record-type
             define-record-discloser)
   (open scheme define-record-types)
   (for-syntax (open scheme define-record-type*-expander))
