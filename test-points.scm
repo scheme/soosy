@@ -1,29 +1,13 @@
 (define-class <point> #f (x y))
 (define-class <color-point> <point> (c))
 
-(define pt (make-object <point>))
+(define pt  (make-object <point>))
+(define cpt (make-object <color-point>))
 
-#|
-We want the following code
+(define (print x) (display x) (newline))
 
-(with-instance-variables pt (x y)
-    (set! x 4)
-    (set! x 5)
-    (list x y))
-
-to expand into
-
-(let-syntax ((set! (syntax-rules (x y)
-                     ((set! x value)
-                      (vector-set! (object-variables pt) 0 value))
-                     ((set! y value)
-                      (vector-set! (object-variables pt) 1 value))
-                     ((set! variable value)
-                      (%set! variable value))))) ; %set! is the renamed set!
-  (let ((x (vector-ref (object-variables pt) 0))
-        (y (vector-ref (object-variables pt) 1)))
-    (set! x 4)
-    (set! x 5)
-    (list x y)))
-
-|#
+(print "Tests!")
+(print (object-of-class? <point> pt))
+(print (object-of-class? <color-point> cpt))
+(print (object-of-class? <point> cpt))
+(print (not (object-of-class? <color-point> pt)))
