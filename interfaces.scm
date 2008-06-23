@@ -2,29 +2,22 @@
 
 (define-interface soosy-macros/interface
   (export (define-class   :syntax)
-          (define-generic :syntax)
-          (with-instance-variables :syntax)
           ;; (define-method  :syntax)
 ))
 
 (define-interface soosy-objects/interface
-  (export make-class make-object make-method
-          method-body method-inherited? set-method-inherited!
+  (export make-class make-object
           object-class object-variables object-methods
-          class? object? object-of-class? base-class? method?
-          class-name class-superclass class-methods
+          class? object? object-of-class? base-class?
+          class-name class-superclass class-methods class-method-define
           class-variables))
 
 (define-interface soosy-helpers/interface
   (compound-interface
    soosy-objects/interface
-   (export (make-getters :syntax)
-           make-setters
-           *class-descriptors*
-           *generic-functions*
-           *generic-function-counter*
-           false? name->class
-           generic-functions-ref)))
+   (export *all-classes*
+           add-class!
+           false? name->class)))
 
 (define-interface soosy/interface
   (compound-interface soosy-macros/interface

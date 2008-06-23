@@ -12,7 +12,8 @@
     `(Class ,(class-name c)
             superclass: ,(class-name (class-superclass c))
             subclasses: ,(map class-name (class-subclasses c))
-            variables:  ,(class-variables c))))
+            variables:  ,(class-variables c)
+            methods:    ,(disclose-methods (class-methods c)))))
 
 (define-record-type* object
   (%make-object class variables)
@@ -27,18 +28,11 @@
          (class-variables (object-class object))
          (vector->list (object-variables object))))
 
-(define-record-type method :method
-  (make-method body inherited?)
-  method?
-  (body       method-body)
-  (inherited? method-inherited? set-method-inherited!))
-
-(define-record-discloser :method
-  (lambda (obj)
-    `(Method inherited:,(method-inherited? obj) (method-body obj))))
+(define (disclose-methods methods)
+  (hash-table-keys methods))
 
 (define (make-class name superclass variables)
-  (let ((entry         (assq name *class-descriptors*))
+  (let ((class         (name->class name))
         (all-variables (if superclass
                            (append (class-variables superclass) variables)
                            variables))
@@ -51,37 +45,29 @@
                           all-variables
                           (if superclass
                               (class-methods superclass)
-                              '())))))
-      (if (not entry)
+                              (make-hash-table))))))
+      (if (not class)
+          ;; if class has not been defined before
 	  (let ((class (make-class)))
-	    (set! *class-descriptors* (cons (cons name class) *class-descriptors*))
+	    (add-class! name class)
             (class-add-subclass! superclass class)
 	    class)
-	  (let ((class (cdr entry)))
-	    (cond ((not (eq? (class-superclass class) superclass))
-                   (class-remove-subclass! (class-superclass class) class)
-		   (let ((class (make-class)))
-		     (set-cdr! entry class)
-                     (class-add-subclass! superclass class)
-		     class))
-		  ((equal? all-variables (class-variables class))
-		   class)
-		  (else
-		   (warn "Redefining class:" name)
-		   (set-class-variables! class variables)
-		   class)))))))
+          ;; if the given superclass does not match the known superclass
+          (cond ((not (eq? (class-superclass class) superclass))
+                 (class-remove-subclass! (class-superclass class) class)
+                 (let ((class (make-class)))
+                   (add-class! name class)
+                   (class-add-subclass! superclass class)
+                   class))
+                (else class))))))
 
 (define (class-add-subclass! class subclass)
-  (cond
-   ((base-class? class))
-   ((class? class)
-    (set-class-subclasses! class (cons subclass (class-subclasses class))))))
+  (if (class? class)
+      (set-class-subclasses! class (cons subclass (class-subclasses class)))))
 
 (define (class-remove-subclass! class subclass)
-  (cond
-   ((base-class? class))
-   ((class? class)
-    (set-class-subclasses! class (delete subclass (class-subclasses class))))))
+  (if (class? class)
+      (set-class-subclasses! class (delete subclass (class-subclasses class)))))
 
 (define (class-method class name)
   (class-methods/ref (class-methods class) name))
@@ -96,30 +82,21 @@
       (error "unknown method" name)))
 
 (define (method-lookup methods name)
-  (let loop ((methods methods))
-    (and methods
-	 (let ((entry (assq name (car methods))))
-	   (if entry
-	       (cdr entry)
-	       (loop (cdr methods)))))))
+  (hash-table-ref/default methods name #f))
 
 (define (class-method-define class name method)
   (let ((methods (class-methods class)))
-    (let ((entry (assq name (car methods))))
-      (if entry
-	  (set-cdr! entry method)
-	  (set-car! methods (cons (cons name method) (car methods))))))
+    (hash-table-set! methods name method))
   name)
 
 (define (base-class? class)
-  (eq? class #f))
+  (eq? (class-superclass class) #f))
 
 (define (subclass? class class*)
-  (or (eq? class class*)
-      (let loop ((class (class-superclass class)))
-	(and class
-	     (or (eq? class class*)
-		 (loop (class-superclass class)))))))
+  (and (class? class)
+       (class? class*)
+       (or (eq? class class*)
+           (subclass? class (class-superclass class*)))))
 
 (define (make-object class)
   (if (not (class? class))
@@ -129,11 +106,14 @@
 
 (define (object-of-class? class object)
   (and (object? object)
-       (or (base-class? class)
-           (eq? class (object-class object))
-           (object-of-class? (class-superclass class) object))))
+       (not (false? class))
+       (subclass? class (object-class object))))
 
 (define (object-methods object)
   (if (object? object)
       (class-methods (object-class object))
       '()))
+
+(define (object-method object name)
+  (let ((methods (object-methods object)))
+    (hash-table-ref/default methods name #f)))
