@@ -62,3 +62,10 @@
      (lambda (k v) (set! alist (cons (list k v) alist)))
      table)
     alist))
+
+(define (hash-table-copy table)
+  (let ((copy (make-hash-table)))
+    (table-walk
+     (lambda (k v) (hash-table-set! copy k v))
+     table)
+    copy))

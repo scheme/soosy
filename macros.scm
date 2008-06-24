@@ -21,19 +21,27 @@
           ;; run-time definition
           `(,%define ,name (,%make-class ',name ,superclass ',variables))))))
 
-#|
 (define-syntax define-method
-  (lambda (form rename compare)
-    (if (not (= 3 (length form)))
-        (syntax-error "define-method class-name generic-function lambda")
-        (let* ((%class-method-define
-               (rename 'class-method-define))
-               (class-name (second form))
-               (generic    (third  form))
-               (body       (fourth form))
-               (class      (name->class class-name))
-               (inst-vars  (class-variables class))
-               (getters    (make-getters inst-vars))
-               (setters    (make-setters inst-vars)))))))
-|#
+  (syntax-rules (lambda)
+    ((define-method class (operation object arguments ...) body0 body ...)
+     (class-method-define class 'operation (lambda (object arguments ...) body0 body ...)))
+    ((define-method class operation method)
+     (class-method-define class 'operation method))))
+
+(define-syntax ==>
+  (syntax-rules ()
+    ((==> object operation argument ...)
+     (send object 'operation argument ...))))
+
+(define-syntax usual==>
+  (syntax-rules ()
+    ((==> object operation argument ...)
+     (send-usual object 'operation argument ...))))
+
+
+
+
+
+
+
 

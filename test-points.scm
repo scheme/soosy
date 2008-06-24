@@ -5,6 +5,21 @@
 (define cpt (make-object <color-point>))
 
 (define (print x) (display x) (newline))
+(define (hello x) (print "Hello!"))
+(define-method <point> :hello hello)
+
+(==> pt :hello)
+(define (say this word) (print word))
+(define-method <point> :say say)
+(==> pt :say "hi")
+(==> cpt :say "subclass")
+
+(class-method-define <color-point> ':say (lambda (this word) (print (string-append "WORD: " word))))
+
+(define-method <color-point> (:say point message) (print (string-append "word: " message)))
+
+(==> cpt :say "override")
+(usual==> cpt :say "usual")
 
 (print "Tests!")
 (print (object-of-class? <point> pt))
