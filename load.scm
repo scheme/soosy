@@ -14,5 +14,3 @@
                "packages.scm"))
 
 (open 'soosy)
-(load "test-points.scm")
-
