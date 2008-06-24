@@ -3,6 +3,7 @@
 (define-interface soosy-macros/interface
   (export (define-class   :syntax)
           (define-method  :syntax)
+          (with-instance-variables :syntax)
           (==>            :syntax)
           (usual==>       :syntax)
           ))
