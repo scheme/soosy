@@ -114,17 +114,18 @@
 
 (define (object-of-class? class object)
   (and (object? object)
-       (not (false? class))
+       (class? class)
        (subclass? class (object-class object))))
 
 (define (object-methods object)
   (if (object? object)
       (class-methods (object-class object))
-      '()))
+      #f))
 
 (define (object-method object name)
-  (let ((methods (object-methods object)))
-    (hash-table-ref/default methods name #f)))
+  (if (object? object)
+      (class-method (object-class object) name)
+      #f))
 
 (define (offset-of variable class)
   (list-index (lambda (item) (eq? item variable))
