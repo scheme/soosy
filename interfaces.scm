@@ -10,10 +10,11 @@
 (define-interface soosy-objects/interface
   (export make-class make-object
           object-class object-variables object-methods object-method
+          object-variable set-object-variable!
           send send-usual
           class? object? object-of-class? base-class?
-          class-name class-superclass class-subclasses class-methods class-method-define
-          class-variables))
+          class-name class-superclass class-subclasses class-methods
+          class-method-define class-variables))
 
 (define-interface soosy-helpers/interface
   (compound-interface

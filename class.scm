@@ -126,6 +126,22 @@
   (let ((methods (object-methods object)))
     (hash-table-ref/default methods name #f)))
 
+(define (offset-of variable class)
+  (list-index (lambda (item) (eq? item variable))
+              (class-variables class)))
+
+(define (object-variable object variable)
+  (let* ((variables (object-variables object))
+         (class     (object-class object))
+         (offset    (offset-of variable class)))
+    (vector-ref variables offset)))
+
+(define (set-object-variable! object variable value)
+  (let* ((variables (object-variables object))
+         (class     (object-class object))
+         (offset    (offset-of variable class)))
+    (vector-set! variables offset value)))
+
 (define (send object operation . args)
   (let ((method (object-method object operation)))
     (apply method object args)))
