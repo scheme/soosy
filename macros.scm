@@ -37,11 +37,3 @@
   (syntax-rules ()
     ((==> object operation argument ...)
      (send-usual object 'operation argument ...))))
-
-
-
-
-
-
-
-

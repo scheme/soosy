@@ -44,7 +44,7 @@
                           subclasses
                           all-variables
                           (if superclass
-                              (hash-table-copy(class-methods superclass))
+                              (hash-table-copy (class-methods superclass))
                               (make-hash-table))))))
       (if (not class)
           ;; if class has not been defined before
