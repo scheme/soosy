@@ -1,32 +1,17 @@
 ;;; -*- Mode: Scheme; scheme48-package: (config) -*-
 
 (define-structure soosy-helpers soosy-helpers/interface
-  (open scheme define-record-type* signals srfi-1 srfi-69)
-  (for-syntax (open scheme signals srfi-1))
+  (open scheme srfi-1 srfi-9 srfi-23 srfi-69)
+  (for-syntax (open scheme srfi-1 srfi-23))
   (files class helpers))
 
 (define-structure soosy-macros soosy-macros/interface
-  (open scheme define-record-type* signals soosy-helpers srfi-1)
-  (for-syntax (open scheme signals soosy-helpers srfi-1))
+  (open scheme soosy-helpers srfi-1 srfi-9)
+  (for-syntax (open scheme soosy-helpers srfi-1))
   (files macros xform))
 
 (define-structure soosy soosy/interface
-  (open scheme soosy-macros soosy-helpers))
-
-(define-structure define-record-type*
-    (export (define-record-type* :syntax)
-            define-record-type
-            define-record-discloser)
-  (open scheme define-record-types)
-  (for-syntax (open scheme define-record-type*-expander))
-  (begin (define-syntax define-record-type*
-           expand-define-record-type*
-           (BEGIN DEFINE DEFINE-RECORD-TYPE))))
-
-(define-structure define-record-type*-expander
-    (export expand-define-record-type*)
-  (open scheme destructuring fluids signals receiving)
-  (files defrectype))
+  (open scheme soosy-macros soosy-helpers soosy-disclosers))
 
 ;;; SRFI 69: Basic hash tables
 ;;;

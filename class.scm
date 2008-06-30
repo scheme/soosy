@@ -1,11 +1,16 @@
 ;;; -*- Mode: Scheme; scheme48-package: soosy -*-
 ;;;
-;;; A class-based single-dispatch OO system with generic functions
+;;; A class-based single-dispatch OO system
 ;;;
 
-(define-record-type* class
-  (%make-class %name superclass (subclasses) (variables) methods)
-  ())
+(define-record-type class
+  (%make-class %name superclass subclasses variables methods)
+  class?
+  (%name      class-%name)
+  (superclass class-superclass)
+  (subclasses class-subclasses set-class-subclasses!)
+  (variables  class-variables  set-class-variables!)
+  (methods    class-methods))
 
 (define-record-discloser :class
   (lambda (c)
@@ -15,9 +20,11 @@
             variables:  ,(class-variables c)
             methods:    ,(disclose-methods (class-methods c)))))
 
-(define-record-type* object
+(define-record-type object
   (%make-object class variables)
-  ())
+  object?
+  (class     object-class)
+  (variables object-variables))
 
 (define-record-discloser :object
   (lambda (obj)
