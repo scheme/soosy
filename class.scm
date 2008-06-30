@@ -50,11 +50,13 @@
 
 (define (class-add-subclass! class subclass)
   (if (class? class)
-      (set-class-subclasses! class (cons subclass (class-subclasses class)))))
+      (set-class-subclasses! class (cons subclass (class-subclasses class)))
+      #f))
 
 (define (class-remove-subclass! class subclass)
   (if (class? class)
-      (set-class-subclasses! class (delete subclass (class-subclasses class)))))
+      (set-class-subclasses! class (delete subclass (class-subclasses class)))
+      #f))
 
 (define (class-method class name)
   (class-methods/ref (class-methods class) name))

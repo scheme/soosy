@@ -13,4 +13,5 @@
 (config '(load "interfaces.scm"
                "packages.scm"))
 
+(open 'srfi-28) ;; format
 (open 'soosy)

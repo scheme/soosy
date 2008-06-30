@@ -15,7 +15,7 @@
   (with-instance-variables <point> pt (y) y))
 
 (define-method <point> :x get-x)
-(define-method <point> :x get-y)
+(define-method <point> :y get-y)
 
 (define (set-x! pt new-x)
   (with-instance-variables <point> pt (x)
@@ -27,3 +27,7 @@
 
 (define-method <point> :set-x set-x!)
 (define-method <point> :set-y set-y!)
+
+(define-method <point> (:print pt)
+  (with-instance-variables <point> pt (x y)
+    (format "{Point: {(x -> ~a) (y -> ~a)}" x y)))
