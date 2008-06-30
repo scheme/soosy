@@ -12,31 +12,11 @@
   (variables  class-variables  set-class-variables!)
   (methods    class-methods))
 
-(define-record-discloser :class
-  (lambda (c)
-    `(Class ,(class-name c)
-            superclass: ,(class-name (class-superclass c))
-            subclasses: ,(map class-name (class-subclasses c))
-            variables:  ,(class-variables c)
-            methods:    ,(disclose-methods (class-methods c)))))
-
 (define-record-type object
   (%make-object class variables)
   object?
   (class     object-class)
   (variables object-variables))
-
-(define-record-discloser :object
-  (lambda (obj)
-    `(Object ,(class-name (object-class obj)) ,(disclose-variables obj))))
-
-(define (disclose-variables object)
-    (map (lambda (name value) `(,name -> ,value))
-         (class-variables (object-class object))
-         (vector->list (object-variables object))))
-
-(define (disclose-methods methods)
-  (hash-table-keys methods))
 
 (define (make-class name superclass variables)
   (let ((class         (name->class name))

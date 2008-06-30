@@ -9,7 +9,7 @@
           ))
 
 (define-interface soosy-objects/interface
-  (export make-class make-object
+  (export make-class make-object class object
           object-class object-variables object-methods object-method
           object-variable set-object-variable!
           send send-usual

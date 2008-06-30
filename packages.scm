@@ -5,6 +5,30 @@
   (for-syntax (open scheme srfi-1 srfi-23))
   (files class helpers))
 
+(define-structure soosy-disclosers (export)
+    (open scheme define-record-types soosy-helpers srfi-1 srfi-69)
+    (begin
+      (define (disclose-variables object)
+        (map (lambda (name value) `(,name -> ,value))
+             (class-variables (object-class object))
+             (vector->list (object-variables object))))
+
+      (define (disclose-methods methods)
+        (hash-table-keys methods))
+
+      (define-record-discloser class
+        (lambda (c)
+          `(Class ,(class-name c)
+                  superclass: ,(class-name (class-superclass c))
+                  subclasses: ,(map class-name (class-subclasses c))
+                  variables:  ,(class-variables c)
+                  methods:    ,(disclose-methods (class-methods c)))))
+
+      (define-record-discloser object
+        (lambda (obj)
+          `(Object ,(class-name (object-class obj)) ,(disclose-variables obj))))
+      ))
+
 (define-structure soosy-macros soosy-macros/interface
   (open scheme soosy-helpers srfi-1 srfi-9)
   (for-syntax (open scheme soosy-helpers srfi-1))
