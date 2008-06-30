@@ -17,31 +17,13 @@
 (define-method <point> :x get-x)
 (define-method <point> :x get-y)
 
-;; (define (set-x! pt new-x)
-;;   (with-instance-variables <point> pt (x)
-;;     (set! x new-x)))
-
-;; (define-method <point> :set-x set-x!)
-
-;;; This is the expansion
 (define (set-x! pt new-x)
-  (let* ((class    <point>)
-         (instance pt)
-         (x        (object-variable instance 'x))
-         (y        (object-variable instance 'y)))
-    (let-syntax
-        ((%set! (syntax-rules () ((%set! old new) (set! old new)))))
-      (let-syntax
-        ((set!
-          (syntax-rules (x y)
-            ((set! x value)
-             (begin (set-object-variable! instance 'x value)
-                    (%set! x value)))
-            ((set! y value)
-             (begin (set-object-variable! instance 'y value)
-                    (%set! y value)))
-            ((set! local value)
-             (%set! local value)))))
-        (set! x new-x)
-        (display x) (newline)
-        (set! x (+ 1 new-x))))))
+  (with-instance-variables <point> pt (x)
+    (set! x new-x)))
+
+(define (set-y! pt new-y)
+  (with-instance-variables <point> pt (y)
+    (set! y new-y)))
+
+(define-method <point> :set-x set-x!)
+(define-method <point> :set-y set-y!)
