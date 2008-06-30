@@ -8,7 +8,7 @@
 (define-structure soosy-macros soosy-macros/interface
   (open scheme define-record-type* signals soosy-helpers srfi-1)
   (for-syntax (open scheme signals soosy-helpers srfi-1))
-  (files macros))
+  (files macros xform))
 
 (define-structure soosy soosy/interface
   (open scheme soosy-macros soosy-helpers))
