@@ -13,7 +13,7 @@
           object-class object-variables object-methods object-method
           object-variable set-object-variable!
           send send-usual
-          class? object? object-of-class? base-class?
+          class? object? object-of-class? base-class? subclass?
           class-name class-superclass class-subclasses class-methods
           class-method-define class-variables))
 
