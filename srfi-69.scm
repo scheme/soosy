@@ -69,3 +69,24 @@
      (lambda (k v) (hash-table-set! copy k v))
      table)
     copy))
+
+; according to srfi-69 "hash function is acceptable for equal?"
+
+(define (hash obj . rest)
+  (if (not (null? rest))
+      (let ((bound (car rest)))
+	(if (and (integer? bound) (> bound 0))
+	    (let ((h (hash obj)))
+	      (if (> h bound)
+		  (remainder h bound)
+		  h))
+	    (error "invalid argument"
+		   '(not (> integer 0))
+		   `(while calling ,hash)
+		   `(received ,bound))))
+      (cond
+       ((pair? obj) (+ (hash (car obj))
+		       (* 3 (hash (cdr obj)))))
+       ((vector? obj) (hash (vector->list obj))) ; lazy mofo
+       ((string? obj) (string-hash obj))
+       (else (default-hash-function obj)))))

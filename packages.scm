@@ -57,7 +57,7 @@
   (open scheme
         (subset signals (error))
         define-opt
-        (modify tables (rename (default-hash-function hash))))
+        tables)
   (files srfi-69))
 
 (define-structure define-opt
