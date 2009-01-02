@@ -22,7 +22,7 @@
 (usual==> cpt :say "usual")
 
 (print "Tests!")
-(print (object-of-class? <point> pt))
-(print (object-of-class? <color-point> cpt))
-(print (object-of-class? <point> cpt))
-(print (not (object-of-class? <color-point> pt)))
+(print (object-of-class? pt  <point>))
+(print (object-of-class? cpt <color-point>))
+(print (object-of-class? pt  <point>))
+(print (not (object-of-class? pt <color-point>)))

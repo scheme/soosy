@@ -101,7 +101,7 @@
       (%make-object class
                     (make-vector (length (class-variables class))))))
 
-(define (object-of-class? class object)
+(define (object-of-class? object class)
   (and (object? object)
        (class? class)
        (subclass? class (object-class object))))
