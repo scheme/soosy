@@ -4,6 +4,14 @@
 (define pt  (make-object <point>))
 (define cpt (make-object <color-point>))
 
+(define (point-x pt)
+  (with-instance-variables <pt> pt (x)
+      x))
+
+(define (set-point-x! pt new-x)
+  (with-instance-variables <pt> pt (x)
+    (set! x new-x)))
+
 (define (print x) (display x) (newline))
 (define (hello x) (print "Hello!"))
 (define-method <point> :hello hello)
