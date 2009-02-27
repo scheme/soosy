@@ -22,3 +22,5 @@
   (syntax-rules ()
     ((==> object operation argument ...)
      (send-usual object 'operation argument ...))))
+
+(define-syntax with-instance-variables with-instance-variables*)

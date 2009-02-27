@@ -32,7 +32,7 @@
 (define-structure soosy-macros soosy-macros/interface
   (open scheme soosy-helpers srfi-1 srfi-9)
   (for-syntax (open scheme soosy-helpers srfi-1))
-  (files macros xform))
+  (files macros))
 
 (define-structure soosy soosy/interface
   (open scheme soosy-macros soosy-helpers soosy-disclosers))
