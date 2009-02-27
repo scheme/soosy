@@ -22,7 +22,8 @@
    soosy-objects/interface
    (export *all-classes*
            add-class!
-           false? name->class)))
+           false? name->class
+           with-instance-variables*)))
 
 (define-interface soosy/interface
   (compound-interface soosy-macros/interface

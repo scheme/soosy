@@ -1,7 +1,7 @@
 ;;; -*- Mode: Scheme; scheme48-package: (config) -*-
 
 (define-structure soosy-helpers soosy-helpers/interface
-  (open scheme srfi-1 srfi-9 srfi-23 srfi-69)
+  (open scheme names signals srfi-1 srfi-9 srfi-23 srfi-69)
   (for-syntax (open scheme srfi-1 srfi-23))
   (files class helpers))
 
