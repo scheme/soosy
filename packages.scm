@@ -30,7 +30,7 @@
       ))
 
 (define-structure soosy-macros soosy-macros/interface
-  (open scheme soosy-helpers srfi-1 srfi-9)
+  (open scheme signals soosy-helpers srfi-1 srfi-9)
   (for-syntax (open scheme soosy-helpers srfi-1))
   (files macros))
 
