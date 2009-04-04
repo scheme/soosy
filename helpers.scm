@@ -24,21 +24,21 @@
 ;;;
 ;;; (1) the LET part generates local bindings for each of the ivars using OBJECT-VARIABLE
 ;;; (2) the LET-SYNTAX part generates 'syntax-rules' macros for SET! and SET-IVAR!
-;;;     * SET! on an ivar will expand into a warning, otherwise it pass on to the normal SET!
+;;;     * SET! on an ivar will expand into a warning, otherwise it falls back to the normal SET!
 ;;;     * SET-IVAR! on an ivar will expand into SET-OBJECT-VARIABLE, otherwise it will expand into a warning.
 ;;;
 (define (with-instance-variables* expression rename compare)
   (if (< (length expression) 5)
       (syntax-error "(with-instance-variables class instance (ivars ...) code)"))
-  (let* ((instance      (list-ref expression 2))
-         (ivars         (list-ref expression 3))
-         (code          (drop expression 4))
-         (%let          (rename 'let))
-         (%let-syntax   (rename 'let-syntax))
-         (%ref          (rename 'object-variable))
-         (%set-ivar!    (rename 'set-object-variable!))
-         (%syntax-rules (rename 'syntax-rules))
-         (%warn         (rename 'warn)))
+  (let ((instance      (list-ref expression 2))
+        (ivars         (list-ref expression 3))
+        (code          (drop expression 4))
+        (%let          (rename 'let))
+        (%let-syntax   (rename 'let-syntax))
+        (%ref          (rename 'object-variable))
+        (%set-ivar!    (rename 'set-object-variable!))
+        (%syntax-rules (rename 'syntax-rules))
+        (%warn         (rename 'warn)))
     `(,%let
       (,@(generate-ivar-bindings
           (lambda (ivar) ivar)
